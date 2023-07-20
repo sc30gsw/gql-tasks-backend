@@ -1,27 +1,44 @@
 import { Injectable } from '@nestjs/common'
-import { Task } from './models/task.modle'
 import { CreateTaskInput } from './dto/createTask.input'
+import { PrismaService } from 'src/prisma/prisma.service'
+import { Task } from '@prisma/client'
+import { UpdateTaskInput } from './dto/updateTask.input'
 
 @Injectable()
 export class TaskService {
-  tasks: Task[] = []
+  constructor(private readonly prismaService: PrismaService) {}
 
-  getTasks(): Task[] {
-    return this.tasks
+  async getTasks(): Promise<Task[]> {
+    return await this.prismaService.task.findMany()
   }
 
-  createTask(createTaskInput: CreateTaskInput): Task {
+  async createTask(createTaskInput: CreateTaskInput): Promise<Task> {
     const { name, dueDate, description } = createTaskInput
 
-    const newTask = new Task()
-    newTask.id = this.tasks.length + 1
-    newTask.name = name
-    newTask.dueDate = dueDate
-    newTask.description = description
-    newTask.status = 'NOT_STARTED'
+    return await this.prismaService.task.create({
+      data: {
+        name,
+        dueDate,
+        description,
+      },
+    })
+  }
 
-    this.tasks.push(newTask)
+  async updateTask(updateTaskInput: UpdateTaskInput): Promise<Task> {
+    const { id, name, dueDate, description, status } = updateTaskInput
 
-    return newTask
+    return await this.prismaService.task.update({
+      data: {
+        name,
+        dueDate,
+        status,
+        description,
+      },
+      where: { id },
+    })
+  }
+
+  async deleteTask(id: number): Promise<Task> {
+    return await this.prismaService.task.delete({ where: { id } })
   }
 }
