@@ -3,6 +3,7 @@ import { Module } from '@nestjs/common'
 import { GraphQLModule } from '@nestjs/graphql'
 import { join } from 'path'
 import { TaskModule } from './task/task.module';
+import { PrismaModule } from './prisma/prisma.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { TaskModule } from './task/task.module';
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
     }),
     TaskModule,
+    PrismaModule,
   ],
 })
 export class AppModule {}
