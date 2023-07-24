@@ -9,7 +9,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
   constructor(private readonly authService: AuthService) {
     // デフォルトではユーザー名での認証
     // Eメールとパスワードで認証できるようにする
-    super({ userNameField: 'email' })
+    super({ usernameField: 'email' })
   }
 
   async validate(email: string, password: string): Promise<User> {
