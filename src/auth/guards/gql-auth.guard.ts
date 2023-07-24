@@ -14,6 +14,7 @@ export class GqlAuthGuard extends AuthGuard('local') {
     const ctx = GqlExecutionContext.create(context)
     // リクエスト情報取得
     const request = ctx.getContext()
+    // resolverの@Argsに渡すsignInInput
     request.body = ctx.getArgs().signInInput
 
     return request
