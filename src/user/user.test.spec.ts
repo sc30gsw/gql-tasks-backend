@@ -46,6 +46,25 @@ describe('taskServiceTest', () => {
       expect(result.email).toEqual(expected.email)
       expect(await bcrypt.compare('password', result.password)).toBe(true)
     })
+
+    it('異常系: 存在済みのメールアドレスで登録', async () => {
+      const expected = {
+        id: 1,
+        name: 'testUser1',
+        email: 'test1@example.com',
+        password: await bcrypt.hash('password', 10),
+      }
+
+      prismaService.user.findUnique.mockResolvedValue(expected)
+
+      await expect(
+        userService.createUser({
+          name: 'testUser1',
+          email: 'test1@example.com',
+          password: 'password',
+        })
+      ).rejects.toThrow('メールアドレスは登録済みです')
+    })
   })
 
   describe('getUser', () => {

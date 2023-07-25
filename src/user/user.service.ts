@@ -10,6 +10,11 @@ export class UserService {
 
   async createUser(createUserInput: CreateUserInput): Promise<User> {
     const { name, email, password } = createUserInput
+    const user = await this.prismaService.user.findUnique({ where: { email } })
+    if (user) {
+      throw new Error('メールアドレスは登録済みです')
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10)
 
     return await this.prismaService.user.create({
